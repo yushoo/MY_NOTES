@@ -9,6 +9,7 @@
   - https://stevedonovan.github.io/rust-gentle-intro/4-modules.html
   - https://doc.rust-lang.org/std/result/
   - https://docs.solana.com/developing/runtime-facilities/programs#system-program
+  - https://solana-labs.github.io/solana-web3.js/modules.html#Commitment
 
 ### Frontend Setup
 
@@ -453,3 +454,176 @@ anchor build
 ```
 
 - To deploy run anchor deploy
+
+### Setting up frontend to connect to program
+
+- Hook up IDL file to web app
+
+  - idl file is actually just a JSON file that has some info about our Solana program like the names of our functions and the parameters they accept. This helps our web app actually know how to interact with our deployed program.
+  - Copy all conent in target/idl/myepicproject.json
+  - Head over to web app
+  - past content of target/idl/myepicproject.json as idl.json
+  - import idl from './idl.json'; in app
+
+- install packages
+
+```
+npm install @project-serum/anchor @solana/web3.js
+```
+
+- Import packages
+
+```javascript
+import { Connection, PublicKey, clusterApiUrl } from "@solana/web3.js";
+import { Program, Provider, web3 } from "@project-serum/anchor";
+```
+
+- Get provider: Create a provider which is an authenticated connection to Solana. To make a provider we need a connected wallet.
+
+```javascript
+const getProvider = () => {
+  const connection = new Connection(network, opts.preflightCommitment);
+  const provider = new Provider(
+    connection,
+    window.solana,
+    opts.preflightCommitment
+  );
+  return provider;
+};
+```
+
+- Variables required
+
+```javascript
+// SystemProgram is a reference to the Solana runtime!
+const { SystemProgram, Keypair } = web3;
+
+// Create a keypair for the account that will hold the GIF data.
+let baseAccount = Keypair.generate();
+
+// Get our program's id from the IDL file.
+const programID = new PublicKey(idl.metadata.address);
+
+// Set our network to devnet.
+const network = clusterApiUrl("devnet");
+
+// Controls how we want to acknowledge when a transaction is "done".
+const opts = {
+  preflightCommitment: "processed",
+};
+```
+
+- SystemProgram is the a reference to the core program that runs Solana we already talked about. Keypair.generate() gives us some parameters we need to create the BaseAccount account that will hold the GIF data for our program.
+- Then, we use idl.metadata.address to get our program's id and then we specify that we want to make sure we connect to devnet by doing clusterApiUrl('devnet').
+- This preflightCommitment: "processed" thing is interesting. Basically, we can actually choose when to receive a confirmation for when our transaction has succeeded. Because the blockchain is fully decentralized, we can choose how long we want to wait for a transaction. Do we want to wait for just one node to acknowledge our transaction? Do we want to wait for the whole Solana chain to acknowledge our transaction?
+- In this case, we simply wait for our transaction to be confirmed by the node we're connected to. This is generally okay — but if you wanna be super super sure you may use something like "finalized" instead. For now, let's roll with "processed".
+
+- Retrieve data from program account
+
+```javascript
+const getGifList = async () => {
+  try {
+    const provider = getProvider();
+    const program = new Program(idl, programID, provider);
+    const account = await program.account.baseAccount.fetch(
+      baseAccount.publicKey
+    );
+
+    console.log("Got the account", account);
+    setGifList(account.gifList);
+  } catch (error) {
+    console.log("Error in getGifList: ", error);
+    setGifList(null);
+  }
+};
+
+useEffect(() => {
+  if (walletAddress) {
+    console.log("Fetching GIF list...");
+    getGifList();
+  }
+}, [walletAddress]);
+```
+
+- Initialize program from frontend
+
+```javascript
+const createGifAccount = async () => {
+  try {
+    const provider = getProvider();
+    const program = new Program(idl, programID, provider);
+    console.log("ping");
+    await program.rpc.startStuffOff({
+      accounts: {
+        baseAccount: baseAccount.publicKey,
+        user: provider.wallet.publicKey,
+        systemProgram: SystemProgram.programId,
+      },
+      signers: [baseAccount],
+    });
+    console.log(
+      "Created a new BaseAccount w/ address:",
+      baseAccount.publicKey.toString()
+    );
+    await getGifList();
+  } catch (error) {
+    console.log("Error creating BaseAccount account:", error);
+  }
+};
+```
+
+- submitting data to our program
+
+```javascript
+const sendGif = async () => {
+  if (inputValue.length === 0) {
+    console.log("No gif link given!");
+    return;
+  }
+  console.log("Gif link:", inputValue);
+  try {
+    const provider = getProvider();
+    const program = new Program(idl, programID, provider);
+
+    await program.rpc.addGif(inputValue, {
+      accounts: {
+        baseAccount: baseAccount.publicKey,
+        user: provider.wallet.publicKey,
+      },
+    });
+    console.log("GIF successfully sent to program", inputValue);
+
+    await getGifList();
+  } catch (error) {
+    console.log("Error sending GIF:", error);
+  }
+};
+```
+
+- Persist the baseaccount info when setting up
+
+  - Under the src directory, go ahead and create a file named createKeyPair.js
+
+    ```javascript
+    const fs = require("fs");
+    const anchor = require("@project-serum/anchor");
+
+    const account = anchor.web3.Keypair.generate();
+
+    fs.writeFileSync("./keypair.json", JSON.stringify(account));
+    ```
+
+  - Then run node createKeyPair.js
+  - add import
+
+  ```javascript
+  import kp from "./keypair.json";
+  ```
+
+- Next, delete let baseAccount = Keypair.generate();. Instead, we'll replace it with this:
+
+```javascript
+const arr = Object.values(kp._keypair.secretKey);
+const secret = new Uint8Array(arr);
+const baseAccount = web3.Keypair.fromSecretKey(secret);
+```
