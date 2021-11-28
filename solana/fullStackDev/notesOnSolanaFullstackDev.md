@@ -143,3 +143,23 @@
             - Spin up solana-test-validator and deploy the program to our local Solana network w/ our wallet. This is kinda like deploying our local server w/ new code.
             - Actually call functions on our deployed program. This is kinda like hitting a specific route on our server to test that it's working.
     - running the program with ```anchor test```
+
+### Solana program
+
+    - A basic program (lib.rs)
+    ```rust
+    use anchor_lang::prelude::*;
+
+    declare_id!("Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS");
+
+    #[program]
+    pub mod myepicproject {
+    use super::\*;
+    pub fn start_stuff_off(ctx: Context<StartStuffOff>) -> ProgramResult {
+    Ok(())
+    }
+    }
+
+    #[derive(Accounts)]
+    pub struct StartStuffOff {}
+    ```
