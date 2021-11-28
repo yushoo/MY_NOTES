@@ -8,6 +8,7 @@
   - https://docs.phantom.app/integrating/establishing-a-connection#eagerly-connecting
   - https://stevedonovan.github.io/rust-gentle-intro/4-modules.html
   - https://doc.rust-lang.org/std/result/
+  - https://docs.solana.com/developing/runtime-facilities/programs#system-program
 
 ### Frontend Setup
 
@@ -193,14 +194,36 @@
 ```javascript
 const anchor = require("@project-serum/anchor");
 
+// Need the system program, will talk about this soon.
+const { SystemProgram } = anchor.web3;
+
 const main = async () => {
   console.log("🚀 Starting test...");
 
-  anchor.setProvider(anchor.Provider.env());
+  // Create and set the provider. We set it before but we needed to update it, so that it can communicate with our frontend!
+  const provider = anchor.Provider.env();
+  anchor.setProvider(provider);
+
   const program = anchor.workspace.Myepicproject;
-  const tx = await program.rpc.startStuffOff();
+
+  // Create an account keypair for our program to use.
+  const baseAccount = anchor.web3.Keypair.generate();
+
+  // Call start_stuff_off, pass it the params it needs!
+  let tx = await program.rpc.startStuffOff({
+    accounts: {
+      baseAccount: baseAccount.publicKey,
+      user: provider.wallet.publicKey,
+      systemProgram: SystemProgram.programId,
+    },
+    signers: [baseAccount],
+  });
 
   console.log("📝 Your transaction signature", tx);
+
+  // Fetch data from the account.
+  let account = await program.account.baseAccount.fetch(baseAccount.publicKey);
+  console.log("👀 GIF Count", account.totalGifs.toString());
 };
 
 const runMain = async () => {
@@ -258,10 +281,24 @@ pub struct BaseAccount {
 ```
 
 - Initializing an account
+  - tells our program what kind of account it can make and what to hold inside of it
 
 ```rust
 #[account]
 pub struct BaseAccount {
     pub total_gifs: u64,
+}
+```
+
+- Specify how to initialize and hold context
+
+```rust
+#[derive(Accounts)]
+pub struct StartStuffOff<'info> {
+    #[account(init, payer = user, space = 9000)]
+    pub base_account: Account<'info, BaseAccount>,
+    #[account(mut)]
+    pub user: Signer<'info>,
+    pub system_program: Program <'info, System>,
 }
 ```
