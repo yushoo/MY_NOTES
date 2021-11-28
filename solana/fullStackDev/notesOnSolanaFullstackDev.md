@@ -257,7 +257,7 @@ pub struct BaseAccount {
 }
 ```
 
-    - Initializing an account
+- Initializing an account
 
         ```rust
         #[account]
