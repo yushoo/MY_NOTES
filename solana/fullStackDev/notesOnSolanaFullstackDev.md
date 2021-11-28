@@ -6,6 +6,8 @@
 - Backend: Rust/typescript faciliated by Anchor
 - Documentation:
   - https://docs.phantom.app/integrating/establishing-a-connection#eagerly-connecting
+  - https://stevedonovan.github.io/rust-gentle-intro/4-modules.html
+  - https://doc.rust-lang.org/std/result/
 
 ### Frontend Setup
 
@@ -166,11 +168,11 @@
 - A basic program (lib.rs)
 
   ```rust
-
+  // import
   use anchor_lang::prelude::*;
-
+  // program id which has info for solana on how to run ur program
   declare_id!("Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS");
-
+  // #[program]: everything in this module below is our program that we want to create handlers for that otherpeople can call
   #[program]
   pub mod myepicproject {
       use super::\*;
@@ -182,3 +184,34 @@
   #[derive(Accounts)]
   pub struct StartStuffOff {}
   ```
+
+- pub mod: tells us that this is a Rust "module" which is an easy way to define a collection of functions and variables - kinda like a class.
+
+- Write a script
+  - Located in tests/asdf.js
+
+```javascript
+const anchor = require("@project-serum/anchor");
+
+const main = async () => {
+  console.log("🚀 Starting test...");
+
+  anchor.setProvider(anchor.Provider.env());
+  const program = anchor.workspace.Myepicproject;
+  const tx = await program.rpc.startStuffOff();
+
+  console.log("📝 Your transaction signature", tx);
+};
+
+const runMain = async () => {
+  try {
+    await main();
+    process.exit(0);
+  } catch (error) {
+    console.error(error);
+    process.exit(1);
+  }
+};
+
+runMain();
+```
