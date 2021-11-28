@@ -215,3 +215,7 @@ const runMain = async () => {
 
 runMain();
 ```
+
+- Setup cycle
+  - Write code in lib.rs
+  - Test specific functions using tests/asdf.js
