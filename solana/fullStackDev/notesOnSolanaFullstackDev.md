@@ -302,3 +302,26 @@ pub struct StartStuffOff<'info> {
     pub system_program: Program <'info, System>,
 }
 ```
+
+### Adding functions to program
+
+- Add a context which has access toa mutable reference
+
+```rust
+#[derive(Accounts)]
+pub struct AddGif<'info> {
+  #[account(mut)]
+  pub base_account: Account<'info, BaseAccount>,
+}
+```
+
+- Adding pb function
+
+```rust
+pub fn add_gif(ctx: Context<AddGif>) -> ProgramResult {
+    // Get a reference to the account and increment total_gifs.
+    let base_account = &mut ctx.accounts.base_account;
+    base_account.total_gifs += 1;
+    Ok(())
+}
+```
