@@ -7,7 +7,7 @@
 - Documentation:
   - https://docs.phantom.app/integrating/establishing-a-connection#eagerly-connecting
 
-### Setup
+### Frontend Setup
 
 - React Frontend
 
@@ -64,7 +64,7 @@
     }, []);
     ```
 
-    - Add a basic connect wallet button
+  - Add a basic connect wallet button
 
     ```javascript
     const connectWallet = async () => {
@@ -89,3 +89,5 @@
       </button>
     );
     ```
+
+### Solana env
