@@ -259,9 +259,9 @@ pub struct BaseAccount {
 
 - Initializing an account
 
-        ```rust
-        #[account]
-        pub struct BaseAccount {
-         pub total_gifs: u64,
-        }
-        ```
+```rust
+#[account]
+pub struct BaseAccount {
+    pub total_gifs: u64,
+}
+```
