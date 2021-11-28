@@ -146,20 +146,22 @@
 
 ### Solana program
 
-    - A basic program (lib.rs)
-    ```rust
-    use anchor_lang::prelude::*;
+- A basic program (lib.rs)
 
-    declare_id!("Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS");
+  ```rust
 
-    #[program]
-    pub mod myepicproject {
-    use super::\*;
-    pub fn start_stuff_off(ctx: Context<StartStuffOff>) -> ProgramResult {
-    Ok(())
-    }
-    }
+  use anchor_lang::prelude::*;
 
-    #[derive(Accounts)]
-    pub struct StartStuffOff {}
-    ```
+  declare_id!("Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS");
+
+  #[program]
+  pub mod myepicproject {
+      use super::\*;
+      pub fn start_stuff_off(ctx: Context<StartStuffOff>) -> ProgramResult {
+         Ok(())
+      }
+  }
+
+  #[derive(Accounts)]
+  pub struct StartStuffOff {}
+  ```
