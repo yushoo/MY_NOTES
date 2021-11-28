@@ -91,3 +91,55 @@
     ```
 
 ### Solana env
+
+    - Setup
+        - Download rust & solana
+        - Verify
+        ```
+        rustup --version
+        rustc --version
+        cargo --version
+
+        solana --version
+        ```
+        - Setup test env
+        ```
+        solana config set --url localhost
+        solana config get
+        ```
+        - Check if local sonala node running is capable
+        ```
+        solana-test-validator
+        ```
+        - Install OpenSSL library
+        ```
+        brew install openssl@1.1
+        ```
+        - Install node, npm, and mocha
+        ```
+        npm install -g mocha
+        ```
+        - Install Anchor
+        ```
+        cargo install --git https://github.com/project-serum/anchor anchor-cli --locked
+        npm install @project-serum/anchor @solana/web3.js
+        ```
+    - Create project with anchor
+    ```
+    anchor init myepicproject --javascript
+    cd myepicproject
+    ```
+    - Create a local keypair
+    ```
+    solana-keygen new
+    ```
+        - Creates a local solana keypair which acts like our local wallet we'll use to toalk to our programs via the command line.
+        - Run ```solana config get``` to see something called ```keypair path```. That's where the wallet has been created
+        - Run ```solana address``` to see the wallet's public address
+
+    - Recap for initial Setup
+        - Anchor init to create a basic Solana program
+            - Compile our program
+            - Spin up solana-test-validator and deploy the program to our local Solana network w/ our wallet. This is kinda like deploying our local server w/ new code.
+            - Actually call functions on our deployed program. This is kinda like hitting a specific route on our server to test that it's working.
+    - running the program with ```anchor test```
