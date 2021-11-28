@@ -325,3 +325,18 @@ pub fn add_gif(ctx: Context<AddGif>) -> ProgramResult {
     Ok(())
 }
 ```
+
+- Call function in script
+
+```javascript
+// Call add_gif!
+await program.rpc.addGif({
+  accounts: {
+    baseAccount: baseAccount.publicKey,
+  },
+});
+
+// Get the account again to see what changed.
+account = await program.account.baseAccount.fetch(baseAccount.publicKey);
+console.log("👀 GIF Count", account.totalGifs.toString());
+```
