@@ -340,3 +340,26 @@ await program.rpc.addGif({
 account = await program.account.baseAccount.fetch(baseAccount.publicKey);
 console.log("👀 GIF Count", account.totalGifs.toString());
 ```
+
+### Adding vectors
+
+- Declare struct
+
+```rust
+#[derive(Debug, Clone, AnchorSerialize, AnchorDeserialize)]
+pub struct ItemStruct {
+    pub gif_link: String,
+    pub user_address: Pubkey,
+}
+```
+
+- Attach vector to account
+
+```rust
+#[account]
+pub struct BaseAccount {
+    pub total_gifs: u64,
+	// Attach a Vector of type ItemStruct to the account.
+    pub gif_list: Vec<ItemStruct>,
+}
+```
