@@ -363,3 +363,15 @@ pub struct BaseAccount {
     pub gif_list: Vec<ItemStruct>,
 }
 ```
+
+- Add to vector via script function call in js file
+
+```javascript
+// You'll need to now pass a GIF link to the function! You'll also need to pass in the user submitting the GIF!
+await program.rpc.addGif("insert_a_giphy_link_here", {
+  accounts: {
+    baseAccount: baseAccount.publicKey,
+    user: provider.wallet.publicKey,
+  },
+});
+```
