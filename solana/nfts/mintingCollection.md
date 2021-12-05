@@ -29,3 +29,13 @@
 ### Starter Code
 
 - https://github.com/buildspace/nft-drop-starter-project
+
+### Process
+
+- Set up the frontend
+  - If a wallet exist, it should inject a solana object into the window. From there we can connect the wallet to the app. If the user already added the app as a trusted app, then it should auto connect using the useEffect on component mount. Else the user should press the connect button that should render if user hasn't added the app.
+  - Be sure to store the publicKey for future use using useState
+  ```javascript
+  const response = await solana.connect({ onlyIfTrusted: true });
+  const response = await solana.connect();
+  ```
