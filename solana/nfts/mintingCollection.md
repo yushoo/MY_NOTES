@@ -39,3 +39,28 @@
   const response = await solana.connect({ onlyIfTrusted: true });
   const response = await solana.connect();
   ```
+- Get local slana env running
+
+  - The goal is to create a web app that lets users connect their wallet, click mint, and receive an NFT from our collection in their wallet.
+  - Download metaplex
+
+- Set up NFT assets
+
+  - Metaplex CLI offers a really simple way to tell your candy machine what NFTs you have available, for what price and more. An NFT is a JSON payload that has some asset attached to it.
+  - Set up an assets folder in the same directory as app
+  - In the assets folder, we are going to have a pair of files associated to each other. The nft asset (ie image) and a json file with the metadata for that specific NFT that Metaplex needs to set everything up on our behalf.
+
+  ```
+  // NFT #1
+  0.png
+  0.json
+
+  // NFT #2
+  1.png
+  1.json
+
+  // NFT #3
+  2.png
+  2.json
+
+  ```
