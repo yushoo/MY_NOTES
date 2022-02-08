@@ -1,12 +1,13 @@
-mod print;
-mod vars;
-mod types;
-mod strings;
-mod tuples;
 mod arrays;
-mod vectors;
-mod structs;
 mod cli;
+mod print;
+mod strings;
+mod structs;
+mod traits;
+mod tuples;
+mod types;
+mod vars;
+mod vectors;
 
 fn main() {
     // print::run();
@@ -17,5 +18,6 @@ fn main() {
     // arrays::run();
     // vectors::run();
     // structs::run();
-    cli::run();
+    // cli::run();
+    traits::run();
 }

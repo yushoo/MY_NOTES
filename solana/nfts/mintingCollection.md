@@ -64,3 +64,15 @@
   2.json
 
   ```
+
+- Deploy NFTs to Solana's Devnet
+
+  - 3 stage process
+  - 1. Upload NFT to Arweave (A decentralized file-store) and initialize your candy machine's config
+    - https://www.arweave.org/
+  - 2. Create your candy machine on Metaplex's contract
+  - 3. Update your candy machine with proper drop date for NFTs - this is the date when people can actually start minting your NFTs
+
+  - Setting up a Solana keypair
+    - In order to get uploading, we need to set up a local solana keypair.
+    - In order for us to upload the NFTs to Solana, we need to have a "local wallet" to work with in the command line.
